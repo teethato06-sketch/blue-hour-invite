@@ -1,0 +1,645 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>The Blue Hour Invitation</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500;1,600&display=swap" rel="stylesheet">
+<style>
+  /* Layout: a sealed envelope is the entry screen. Tapping the seal opens it and reveals the full Blue Hour invitation site. */
+  :root {
+    --bg: #e9f0fa;
+    --bg-2: #d3e1f5;
+    --paper: #fbfdff;
+    --ink: #14233f;
+    --muted: #54657f;
+    --accent: #2c5db5;
+    --accent-ink: #ffffff;
+    --line: #c8d6ec;
+    --env: #dbe6f6;
+    --env-flap: #c7d7ee;
+    --shadow: 0 24px 60px -24px rgba(20, 35, 63, 0.35);
+
+    --s-bg: #ffffff;
+    --s-tint: #f4f7fb;
+    --s-card: #ffffff;
+    --s-ink: #1c2738;
+    --s-muted: #667388;
+    --s-accent: #4d77a8;
+    --s-line: #e1e8f1;
+    --btn-bg: #1c2738;
+    --btn-ink: #ffffff;
+    --band: #1c2738;
+    --band-ink: #f2f6fc;
+    --band-muted: #9fb0cc;
+
+    --display: "Playfair Display", Georgia, "Times New Roman", serif;
+    --body: "DM Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0a1429;
+      --bg-2: #14234a;
+      --paper: #13224a;
+      --ink: #e9eefb;
+      --muted: #9fb0d0;
+      --accent: #8aadf2;
+      --accent-ink: #0a1429;
+      --line: #2a3d6b;
+      --env: #1b2d57;
+      --env-flap: #223767;
+      --shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.7);
+
+      --s-bg: #0b1426;
+      --s-tint: #101c36;
+      --s-card: #111f3d;
+      --s-ink: #e8eefb;
+      --s-muted: #9aabc8;
+      --s-accent: #8fb0e6;
+      --s-line: #223559;
+      --btn-bg: #e8eefb;
+      --btn-ink: #0b1426;
+      --band: #14244a;
+      --band-ink: #f2f6fc;
+      --band-muted: #a9bbdb;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0a1429;
+    --bg-2: #14234a;
+    --paper: #13224a;
+    --ink: #e9eefb;
+    --muted: #9fb0d0;
+    --accent: #8aadf2;
+    --accent-ink: #0a1429;
+    --line: #2a3d6b;
+    --env: #1b2d57;
+    --env-flap: #223767;
+    --shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.7);
+
+    --s-bg: #0b1426;
+    --s-tint: #101c36;
+    --s-card: #111f3d;
+    --s-ink: #e8eefb;
+    --s-muted: #9aabc8;
+    --s-accent: #8fb0e6;
+    --s-line: #223559;
+    --btn-bg: #e8eefb;
+    --btn-ink: #0b1426;
+    --band: #14244a;
+    --band-ink: #f2f6fc;
+    --band-muted: #a9bbdb;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0;
+    background: var(--s-bg);
+    color: var(--s-ink);
+    font-family: var(--body);
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  [hidden] { display: none !important; }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--s-accent); outline-offset: 3px; }
+
+  /* ================= ENVELOPE ================= */
+  .intro {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-block: 32px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    background: linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
+    color: var(--ink);
+    transition: opacity 0.6s ease;
+  }
+  .intro.leaving { opacity: 0; }
+  .envelope-wrap { width: 100%; max-width: 460px; min-width: 0; text-align: center; }
+  .addressee { margin: 0 0 6px; font-family: var(--display); font-style: italic; font-size: 20px; }
+  .envelope { position: relative; width: 100%; aspect-ratio: 7 / 5; perspective: 1400px; margin-top: 12%; }
+  .env-back, .env-front, .flap, .letter { position: absolute; }
+  .env-back { inset: 0; background: var(--env); border-radius: 6px; box-shadow: var(--shadow); z-index: 1; }
+  .letter {
+    left: 6%; right: 6%; top: 6%; bottom: 6%;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    z-index: 2;
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
+    transition: transform 0.9s cubic-bezier(.2,.7,.2,1) 0.45s;
+  }
+  .letter small { font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--muted); }
+  .letter strong { font-family: var(--display); font-weight: 500; font-size: clamp(22px, 7vw, 30px); line-height: 1.1; }
+  .letter strong i { color: var(--accent); }
+  .env-front {
+    inset: 0; background: var(--env);
+    clip-path: polygon(0 0, 50% 56%, 100% 0, 100% 100%, 0 100%);
+    border-radius: 6px; z-index: 3;
+  }
+  .env-front::after { content: ""; position: absolute; inset: 0; background: linear-gradient(160deg, rgba(255,255,255,0.35), rgba(0,0,0,0.06)); }
+  .flap {
+    left: 0; right: 0; top: 0; height: 56%;
+    background: var(--env-flap);
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top center; z-index: 4;
+    transition: transform 0.7s cubic-bezier(.4,.1,.2,1), z-index 0s linear 0.3s;
+  }
+  .seal {
+    position: absolute; left: 50%; top: 56%;
+    transform: translate(-50%, -50%);
+    width: 68px; height: 68px; border-radius: 50%; border: 0;
+    background: var(--accent); color: var(--accent-ink);
+    font-family: var(--display); font-weight: 600; font-size: 22px; letter-spacing: 0.04em;
+    cursor: pointer; z-index: 5;
+    box-shadow: 0 6px 16px -4px rgba(0,0,0,0.35), inset 0 0 0 3px rgba(255,255,255,0.18);
+    transition: transform 0.25s ease, opacity 0.3s ease;
+  }
+  .seal:hover { transform: translate(-50%, -50%) scale(1.06); }
+  .seal:focus-visible { outline: 3px solid var(--accent); outline-offset: 4px; }
+  .hint { margin: 28px 0 0; font-size: 11px; letter-spacing: 0.24em; text-transform: uppercase; color: var(--muted); }
+  .envelope.open .flap { transform: rotateX(180deg); z-index: 1; }
+  .envelope.open .seal { opacity: 0; pointer-events: none; }
+  .envelope.open .letter { transform: translateY(-46%); }
+
+  /* ================= SITE ================= */
+  .site { animation: fadein 0.9s ease both; }
+  @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+  .wrap {
+    max-width: 1240px; margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .eyebrow {
+    margin: 0; display: flex; align-items: center; gap: 16px;
+    font-size: 12px; font-weight: 600; letter-spacing: 0.3em; text-transform: uppercase; color: var(--s-accent);
+  }
+  .eyebrow-line { width: 44px; height: 1px; background: var(--s-accent); }
+  .section-label { font-size: 11px; font-weight: 600; letter-spacing: 0.26em; text-transform: uppercase; color: var(--s-muted); margin-bottom: 20px; }
+  h1, h2, h3 { font-family: var(--display); font-weight: 500; margin: 0; text-wrap: balance; }
+  h1 em, h2 em { font-style: italic; color: var(--s-accent); font-weight: 500; }
+
+  /* header */
+  .site-header { border-bottom: 1px solid var(--s-line); position: relative; }
+  .site-header .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding-block: 20px; }
+  .brand { display: flex; align-items: center; gap: 16px; text-decoration: none; min-width: 0; }
+  .brand-mark {
+    flex: none; width: 56px; height: 56px; border-radius: 50%;
+    border: 1px solid var(--s-accent); color: var(--s-accent);
+    display: grid; place-items: center; font-family: var(--display); font-weight: 600; font-size: 19px;
+  }
+  .brand-text { display: flex; flex-direction: column; font-size: 15px; font-weight: 700; letter-spacing: 0.22em; line-height: 1.5; }
+  .brand-text small { font-size: 10.5px; font-weight: 500; letter-spacing: 0.22em; color: var(--s-muted); }
+  .nav { display: flex; align-items: center; gap: 44px; font-size: 15px; }
+  .nav a { text-decoration: none; color: var(--s-muted); }
+  .nav a:hover { color: var(--s-ink); }
+  .nav .nav-rsvp { color: var(--s-ink); border: 1px solid var(--s-ink); padding: 16px 28px; display: inline-flex; gap: 14px; }
+  .menu-toggle { display: none; width: 44px; height: 44px; border: 1px solid var(--s-line); background: var(--s-card); cursor: pointer; flex-direction: column; justify-content: center; align-items: center; gap: 6px; padding: 0; }
+  .menu-toggle span { display: block; width: 20px; height: 1.5px; background: var(--s-ink); }
+
+  /* hero */
+  .hero .wrap { display: grid; grid-template-columns: 1.1fr 1fr; gap: 48px; align-items: center; padding-block: 72px 88px; }
+  .hero-copy { min-width: 0; }
+  .hero h1 { font-size: clamp(46px, 7.4vw, 108px); line-height: 0.98; margin-top: 32px; letter-spacing: -0.01em; }
+  .hero-description { margin: 32px 0 0; max-width: 34em; font-size: 18px; color: var(--s-muted); }
+  .hero-actions { margin-top: 36px; display: flex; flex-wrap: wrap; align-items: center; gap: 20px 36px; }
+  .button {
+    display: inline-flex; align-items: center; gap: 28px; text-decoration: none;
+    font: inherit; font-weight: 600; font-size: 15px; letter-spacing: 0.02em;
+    padding: 18px 32px; border: 1px solid var(--btn-bg); cursor: pointer;
+  }
+  .button-primary { background: var(--btn-bg); color: var(--btn-ink); }
+  .button-outline { background: transparent; color: var(--s-ink); border-color: var(--s-ink); }
+  .button:hover { transform: translateY(-2px); }
+  .text-link { text-decoration: none; color: var(--s-muted); font-size: 15px; display: inline-flex; gap: 12px; }
+  .hero-note { margin-top: 44px; font-size: 11px; letter-spacing: 0.24em; color: var(--s-muted); display: flex; gap: 12px; align-items: center; }
+  .tiny-star { color: var(--s-accent); }
+
+  .hero-art { position: relative; min-height: 560px; min-width: 0; }
+  .art-orbit { position: absolute; left: 50%; top: 50%; border: 1px solid var(--s-line); border-radius: 50%; }
+  .orbit-one { width: 92%; height: 82%; transform: translate(-50%, -50%) rotate(-24deg); }
+  .orbit-two { width: 70%; height: 96%; transform: translate(-50%, -50%) rotate(28deg); }
+  .art-glow { position: absolute; left: 50%; top: 50%; width: 80%; aspect-ratio: 1; transform: translate(-50%, -50%); border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--s-accent) 16%, transparent), transparent 68%); }
+  .art-card {
+    position: absolute; left: 50%; top: 50%; width: min(300px, 68%); aspect-ratio: 3 / 4.2;
+    transform: translate(-50%, -50%) rotate(4deg);
+    background: var(--s-card); border: 1px solid var(--s-line);
+    box-shadow: 0 30px 60px -28px rgba(28, 39, 56, 0.35);
+    padding: 16px; display: flex; flex-direction: column; justify-content: space-between;
+    font-size: 9px; letter-spacing: 0.2em; color: var(--s-muted);
+  }
+  .art-card-top, .art-card-bottom { display: flex; justify-content: space-between; gap: 8px; }
+  .art-center { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; }
+  .art-small { font-size: 9px; letter-spacing: 0.3em; }
+  .art-title { font-family: var(--display); font-size: clamp(40px, 5vw, 62px); line-height: 1.05; letter-spacing: 0; color: var(--s-ink); font-weight: 600; }
+  .art-title i { color: var(--s-accent); font-weight: 500; }
+  .art-rule { width: 36px; height: 1px; background: var(--s-accent); }
+  .art-date { font-size: 10px; letter-spacing: 0.2em; }
+  .floating-chip {
+    position: absolute; display: flex; align-items: center; gap: 12px;
+    background: var(--s-card); border: 1px solid var(--s-line);
+    box-shadow: 0 14px 30px -18px rgba(28, 39, 56, 0.4);
+    padding: 12px 16px; font-size: 12px; letter-spacing: 0.1em; line-height: 1.35;
+  }
+  .floating-chip small { display: block; font-size: 9.5px; letter-spacing: 0.16em; color: var(--s-muted); }
+  .chip-icon, .pin { color: var(--s-accent); font-size: 18px; }
+  .chip-date { right: 0; top: 14%; }
+  .chip-location { left: 0; bottom: 8%; }
+  .art-caption { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); font-family: var(--display); font-style: italic; font-size: 14px; color: var(--s-muted); white-space: nowrap; }
+
+  /* occasion */
+  .intro-section .wrap { display: grid; grid-template-columns: 1.5fr 1fr; gap: 56px; padding-block: 96px; border-top: 1px solid var(--s-line); }
+  .intro-section .section-label { grid-column: 1 / -1; margin: 0; }
+  .intro-content { min-width: 0; }
+  .intro-content h2 { font-size: clamp(34px, 4.6vw, 58px); line-height: 1.08; margin-top: 20px; }
+  .intro-text { margin: 28px 0 0; max-width: 36em; font-size: 18px; color: var(--s-muted); }
+  .signature { margin-top: 28px; font-family: var(--display); font-style: italic; font-size: 20px; }
+  .signature span { color: var(--s-accent); }
+  .intro-side { align-self: center; padding-left: 36px; border-left: 1px solid var(--s-line); min-width: 0; }
+  .quote-mark { font-family: var(--display); font-size: 80px; line-height: 0.6; color: var(--s-accent); }
+  .intro-side p { margin: 12px 0 0; font-family: var(--display); font-size: 26px; line-height: 1.35; }
+  .intro-side em { color: var(--s-accent); }
+
+  /* details */
+  .details-section { background: var(--s-tint); border-block: 1px solid var(--s-line); }
+  .details-section .wrap { padding-block: 88px; }
+  .details-heading { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: 20px; margin-bottom: 44px; }
+  .details-heading h2 { font-size: clamp(36px, 4.6vw, 58px); margin-top: 14px; }
+  .details-sub { margin: 0; max-width: 24em; color: var(--s-muted); }
+  .detail-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; }
+  .detail-card { position: relative; background: var(--s-card); border: 1px solid var(--s-line); padding: 28px 24px 26px; display: flex; flex-direction: column; gap: 6px; }
+  .detail-number { position: absolute; right: 20px; top: 20px; font-size: 11px; letter-spacing: 0.2em; color: var(--s-muted); }
+  .detail-icon { font-size: 24px; color: var(--s-accent); margin-bottom: 40px; }
+  .detail-card h3 { font-size: 22px; }
+  .detail-card p { margin: 0; font-size: 17px; }
+  .detail-card small { color: var(--s-muted); font-size: 14px; }
+
+  /* countdown */
+  .countdown-section { background: var(--band); color: var(--band-ink); text-align: center; }
+  .countdown-inner {
+    max-width: 960px; margin: 0 auto; padding-block: 88px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .countdown-inner .eyebrow { justify-content: center; color: var(--band-muted); }
+  .countdown-inner h2 { font-size: clamp(36px, 5vw, 64px); margin-top: 16px; }
+  .countdown-inner h2 em { color: #9fc0ee; }
+  .countdown { margin-top: 40px; display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: center; gap: 12px 20px; font-variant-numeric: tabular-nums; }
+  .countdown div { min-width: 84px; }
+  .countdown strong { display: block; font-family: var(--display); font-weight: 500; font-size: clamp(40px, 8vw, 84px); line-height: 1.05; }
+  .countdown span { font-size: 10.5px; letter-spacing: 0.26em; color: var(--band-muted); }
+  .countdown i { font-style: normal; font-family: var(--display); font-size: clamp(32px, 6vw, 60px); color: var(--band-muted); line-height: 1.2; }
+  .countdown-note { margin: 28px 0 0; color: var(--band-muted); }
+
+  /* venue */
+  .venue .wrap { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; padding-block: 96px; }
+  .venue-image {
+    position: relative; min-height: 460px; min-width: 0;
+    background: linear-gradient(155deg, #3a5f92 0%, #1b2f55 55%, #0f1c38 100%);
+    display: flex; align-items: flex-end; padding: 32px; overflow: hidden;
+  }
+  .venue-image::before { content: ""; position: absolute; width: 70%; aspect-ratio: 1; right: -18%; top: -12%; border-radius: 50%; border: 1px solid rgba(255,255,255,0.25); box-shadow: 0 0 0 40px rgba(255,255,255,0.04); }
+  .venue-image-overlay { position: relative; color: #f2f6fc; display: flex; flex-direction: column; gap: 10px; }
+  .venue-image-overlay span { font-size: 11px; letter-spacing: 0.26em; opacity: 0.8; }
+  .venue-image-overlay strong { font-family: var(--display); font-weight: 500; font-size: clamp(30px, 4vw, 44px); line-height: 1.1; }
+  .venue-image-overlay em { color: #b7d0f5; }
+  .venue-copy { min-width: 0; }
+  .venue-copy h2 { font-size: clamp(36px, 4.6vw, 58px); margin-top: 16px; }
+  .venue-description { margin: 24px 0 0; max-width: 32em; color: var(--s-muted); font-size: 18px; }
+  .address { margin: 28px 0; display: flex; gap: 16px; align-items: flex-start; padding: 20px 0; border-block: 1px solid var(--s-line); }
+  .address > span { color: var(--s-accent); font-size: 22px; }
+  .address strong { display: block; font-family: var(--display); font-weight: 500; font-size: 20px; }
+  .address small { color: var(--s-muted); font-size: 14px; }
+
+  /* rsvp */
+  .rsvp-section { background: var(--s-tint); border-top: 1px solid var(--s-line); position: relative; overflow: hidden; }
+  .rsvp-decoration { position: absolute; right: 6%; top: 40px; font-size: 90px; color: var(--s-accent); opacity: 0.12; line-height: 1; }
+  .rsvp-content {
+    position: relative; max-width: 620px; margin: 0 auto; padding-block: 96px;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  .rsvp-content .eyebrow { justify-content: center; }
+  .rsvp-content h2 { text-align: center; font-size: clamp(36px, 5vw, 60px); margin-top: 16px; }
+  .rsvp-intro { text-align: center; color: var(--s-muted); margin: 18px 0 36px; }
+  .rsvp-form { display: grid; gap: 8px; background: var(--s-card); border: 1px solid var(--s-line); padding: 32px 28px; }
+  .rsvp-form label { font-size: 13px; font-weight: 600; margin-top: 10px; }
+  .rsvp-form label span { font-weight: 400; color: var(--s-muted); }
+  .rsvp-form input, .rsvp-form select, .rsvp-form textarea {
+    width: 100%; font: inherit; color: var(--s-ink); background: var(--s-bg);
+    border: 1px solid var(--s-line); padding: 13px 14px; border-radius: 0;
+  }
+  .rsvp-form textarea { resize: vertical; }
+  .submit-button { margin-top: 18px; justify-content: center; width: 100%; }
+  .form-message { margin: 10px 0 0; min-height: 1.4em; text-align: center; font-weight: 600; color: var(--s-accent); }
+  .privacy-note { margin: 0; text-align: center; font-size: 12px; color: var(--s-muted); }
+
+  /* footer */
+  .footer { border-top: 1px solid var(--s-line); }
+  .footer .wrap { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px 32px; padding-block: 40px; }
+  .footer p { margin: 0; font-family: var(--display); font-style: italic; color: var(--s-muted); }
+  .back-top { font-size: 11px; letter-spacing: 0.24em; text-decoration: none; color: var(--s-ink); }
+  .copyright { width: 100%; font-size: 11px; letter-spacing: 0.2em; color: var(--s-muted); }
+
+  /* responsive */
+  @media (max-width: 960px) {
+    .hero .wrap { grid-template-columns: 1fr; padding-block: 48px 64px; }
+    .hero-art { min-height: 500px; }
+    .intro-section .wrap { grid-template-columns: 1fr; padding-block: 64px; gap: 36px; }
+    .intro-side { padding-left: 0; border-left: 0; padding-top: 28px; border-top: 1px solid var(--s-line); }
+    .detail-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .venue .wrap { grid-template-columns: 1fr; gap: 40px; padding-block: 64px; }
+    .venue-image { min-height: 320px; }
+  }
+  @media (max-width: 800px) {
+    .menu-toggle { display: flex; }
+    .nav {
+      display: none; position: absolute; left: 0; right: 0; top: 100%; z-index: 20;
+      flex-direction: column; align-items: stretch; gap: 0;
+      background: var(--s-bg); border-bottom: 1px solid var(--s-line);
+      padding: 8px max(16px, env(safe-area-inset-right, 0px)) 20px max(16px, env(safe-area-inset-left, 0px));
+    }
+    .nav.open { display: flex; }
+    .nav a { padding: 14px 0; border-bottom: 1px solid var(--s-line); }
+    .nav .nav-rsvp { margin-top: 14px; justify-content: space-between; border-bottom: 1px solid var(--s-ink); }
+    .brand-text small { display: none; }
+  }
+  @media (max-width: 520px) {
+    .detail-grid { grid-template-columns: 1fr; }
+    .hero-art { min-height: 440px; }
+    .art-caption { display: none; }
+    .floating-chip { padding: 9px 12px; }
+    .countdown div { min-width: 64px; }
+    .countdown i { display: none; }
+    .rsvp-form { padding: 24px 18px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .letter, .flap, .seal, .intro { transition: none; }
+    .site { animation: none; }
+    .button:hover { transform: none; }
+  }
+</style>
+
+<!-- ============ ENVELOPE ============ -->
+<section class="intro" id="intro" aria-label="Sealed invitation">
+  <div class="envelope-wrap">
+    <p class="addressee">For you</p>
+    <div class="envelope" id="envelope">
+      <div class="env-back"></div>
+      <div class="letter" aria-hidden="true">
+        <small>You are invited</small>
+        <strong>The <i>Blue</i> Hour</strong>
+      </div>
+      <div class="env-front"></div>
+      <div class="flap"></div>
+      <button class="seal" id="seal" type="button" aria-label="Open the invitation">BH</button>
+    </div>
+    <p class="hint">Tap the seal to open</p>
+  </div>
+</section>
+
+<!-- ============ INVITATION SITE ============ -->
+<div class="site" id="site" hidden>
+  <header class="site-header">
+    <div class="wrap">
+      <a class="brand" href="#home" data-scroll aria-label="The Blue Hour home">
+        <span class="brand-mark">BH</span>
+        <span class="brand-text">THE BLUE HOUR<small>AN EVENING TO REMEMBER</small></span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="nav"><span></span><span></span></button>
+      <nav class="nav" id="nav">
+        <a href="#story" data-scroll>The occasion</a>
+        <a href="#details" data-scroll>Event details</a>
+        <a href="#venue" data-scroll>The venue</a>
+        <a class="nav-rsvp" href="#rsvp" data-scroll>RSVP <span>↗</span></a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" id="home">
+      <div class="wrap">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="eyebrow-line"></span> A PERSONAL INVITATION</p>
+          <h1>Some moments deserve to be <em>remembered.</em></h1>
+          <p class="hero-description">An evening of good company, beautiful details and memories in the making. We'd love for you to be part of it.</p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#rsvp" data-scroll>Save your place <span>↗</span></a>
+            <a class="text-link" href="#details" data-scroll>Explore the invitation <span>↓</span></a>
+          </div>
+          <div class="hero-note"><span class="tiny-star">✳</span> ONE EVENING. A THOUSAND MEMORIES.</div>
+        </div>
+        <div class="hero-art" role="img" aria-label="Soft blue invitation card artwork">
+          <div class="art-orbit orbit-one"></div>
+          <div class="art-orbit orbit-two"></div>
+          <div class="art-glow"></div>
+          <div class="art-card">
+            <div class="art-card-top"><span>YOU ARE INVITED</span><span>NO. 001</span></div>
+            <div class="art-center">
+              <span class="art-small">AN OCCASION</span>
+              <span class="art-title">The<br><i>Blue</i> Hour</span>
+              <span class="art-rule"></span>
+              <span class="art-date">19 JUNE 2027 · 17:30</span>
+            </div>
+            <div class="art-card-bottom"><span>GATHER · CELEBRATE · CONNECT</span><span>✳</span></div>
+          </div>
+          <div class="floating-chip chip-date"><span class="chip-icon">✧</span><span>19.06.27<small>SATURDAY</small></span></div>
+          <div class="floating-chip chip-location"><span class="pin">⌖</span><span>JOHANNESBURG<small>SOUTH AFRICA</small></span></div>
+          <span class="art-caption">A little something special is on the way.</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="intro-section" id="story">
+      <div class="wrap">
+        <div class="section-label">01 / THE OCCASION</div>
+        <div class="intro-content">
+          <p class="eyebrow"><span class="eyebrow-line"></span> LET'S MAKE IT A MOMENT</p>
+          <h2>Not just another date on the calendar. <em>A feeling.</em></h2>
+          <p class="intro-text">Life gives us plenty of reasons to get together. This is one of those moments we're choosing to make a little more special. Come dressed in your favourite look, bring your best energy, and let the evening unfold.</p>
+          <div class="signature">With love, <span>the hosts</span></div>
+        </div>
+        <div class="intro-side">
+          <div class="quote-mark">“</div>
+          <p>Good people.<br>Great atmosphere.<br><em>One unforgettable night.</em></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="details-section" id="details">
+      <div class="wrap">
+        <div class="section-label">02 / MAKE A NOTE</div>
+        <div class="details-heading">
+          <div><p class="eyebrow"><span class="eyebrow-line"></span> THE IMPORTANT BITS</p><h2>All the <em>details.</em></h2></div>
+          <p class="details-sub">Everything you need to know before we see you there.</p>
+        </div>
+        <div class="detail-grid">
+          <article class="detail-card"><span class="detail-number">01</span><span class="detail-icon">◷</span><h3>When</h3><p>Saturday, 19 June 2027</p><small>Guests arrive from 17:30</small></article>
+          <article class="detail-card"><span class="detail-number">02</span><span class="detail-icon">⌖</span><h3>Where</h3><p>The Glasshouse</p><small>Johannesburg, South Africa</small></article>
+          <article class="detail-card"><span class="detail-number">03</span><span class="detail-icon">✧</span><h3>Dress code</h3><p>Modern elegance</p><small>A touch of blue is welcome</small></article>
+          <article class="detail-card"><span class="detail-number">04</span><span class="detail-icon">♡</span><h3>Bring</h3><p>Your lovely self</p><small>Good energy is the only essential</small></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="countdown-section">
+      <div class="countdown-inner">
+        <p class="eyebrow">THE WAIT IS PART OF THE MAGIC</p>
+        <h2>Until we <em>gather.</em></h2>
+        <div class="countdown" id="countdown" role="timer" aria-label="Countdown to the event">
+          <div><strong id="days">000</strong><span>DAYS</span></div><i>:</i>
+          <div><strong id="hours">00</strong><span>HOURS</span></div><i>:</i>
+          <div><strong id="minutes">00</strong><span>MINUTES</span></div><i>:</i>
+          <div><strong id="seconds">00</strong><span>SECONDS</span></div>
+        </div>
+        <p class="countdown-note" id="countdownNote">A beautiful evening is getting closer.</p>
+      </div>
+    </section>
+
+    <section class="venue" id="venue">
+      <div class="wrap">
+        <div class="venue-image">
+          <div class="venue-image-overlay">
+            <span>THE SETTING</span>
+            <strong>A space to<br><em>come together.</em></strong>
+          </div>
+        </div>
+        <div class="venue-copy">
+          <div class="section-label">03 / FIND YOUR WAY</div>
+          <p class="eyebrow"><span class="eyebrow-line"></span> MEET US HERE</p>
+          <h2>The <em>Glasshouse.</em></h2>
+          <p class="venue-description">A beautiful setting for an evening worth celebrating. Arrive from 17:30 and take your time settling in.</p>
+          <div class="address"><span>⌖</span><div><strong>The Glasshouse</strong><small>Johannesburg, Gauteng, South Africa</small></div></div>
+          <a class="button button-outline" href="https://www.google.com/maps/search/?api=1&query=Johannesburg+Gauteng" target="_blank" rel="noopener">Open map <span>↗</span></a>
+        </div>
+      </div>
+    </section>
+
+    <section class="rsvp-section" id="rsvp">
+      <div class="rsvp-decoration" aria-hidden="true">✳</div>
+      <div class="rsvp-content">
+        <p class="eyebrow">WE HOPE YOU CAN MAKE IT</p>
+        <h2>Will you join <em>us?</em></h2>
+        <p class="rsvp-intro">Please let us know if we can save you a place. We can't wait to celebrate with you.</p>
+        <form class="rsvp-form" id="rsvpForm">
+          <label for="guestName">Your name</label>
+          <input id="guestName" name="guestName" type="text" placeholder="Enter your full name" required maxlength="70" autocomplete="name">
+          <label for="guestEmail">Email address</label>
+          <input id="guestEmail" name="guestEmail" type="email" placeholder="you@example.com" required maxlength="100" autocomplete="email">
+          <label for="attendance">Will you be attending?</label>
+          <select id="attendance" name="attendance" required>
+            <option value="" disabled selected>Choose your response</option>
+            <option value="Yes, I'll be there">Yes, I'll be there</option>
+            <option value="Sorry, I can't make it">Sorry, I can't make it</option>
+          </select>
+          <label for="guestMessage">A note for the hosts <span>(optional)</span></label>
+          <textarea id="guestMessage" name="guestMessage" rows="3" placeholder="Leave a little message..."></textarea>
+          <button class="button button-primary submit-button" type="submit">Send my response <span>↗</span></button>
+          <p class="form-message" id="formMessage" role="status" aria-live="polite"></p>
+          <p class="privacy-note">Your response is saved on this device only.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="wrap">
+      <a class="brand" href="#home" data-scroll><span class="brand-mark">BH</span><span class="brand-text">THE BLUE HOUR<small>AN EVENING TO REMEMBER</small></span></a>
+      <p>Made for moments that matter.</p>
+      <a href="#home" class="back-top" data-scroll>BACK TO TOP ↑</a>
+      <small class="copyright">© 2027 THE BLUE HOUR · WITH LOVE</small>
+    </div>
+  </footer>
+</div>
+
+<script>
+  (function () {
+    var EVENT = new Date("2027-06-19T17:30:00+02:00");
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var intro = document.getElementById("intro");
+    var envelope = document.getElementById("envelope");
+    var seal = document.getElementById("seal");
+    var site = document.getElementById("site");
+    var nav = document.getElementById("nav");
+    var menuToggle = document.getElementById("menuToggle");
+    var countdownTimer = null;
+
+    function pad(n, len) { var s = String(n); while (s.length < len) s = "0" + s; return s; }
+
+    function tick() {
+      var ms = EVENT - new Date();
+      var note = document.getElementById("countdownNote");
+      if (ms <= 0) {
+        ["days", "hours", "minutes", "seconds"].forEach(function (id) { document.getElementById(id).textContent = id === "days" ? "000" : "00"; });
+        note.textContent = "The evening has arrived. Enjoy every minute.";
+        if (countdownTimer) clearInterval(countdownTimer);
+        return;
+      }
+      var s = Math.floor(ms / 1000);
+      document.getElementById("days").textContent = pad(Math.floor(s / 86400), 3);
+      document.getElementById("hours").textContent = pad(Math.floor((s % 86400) / 3600), 2);
+      document.getElementById("minutes").textContent = pad(Math.floor((s % 3600) / 60), 2);
+      document.getElementById("seconds").textContent = pad(s % 60, 2);
+    }
+
+    function showSite() {
+      intro.hidden = true;
+      site.hidden = false;
+      window.scrollTo(0, 0);
+      tick();
+      countdownTimer = setInterval(tick, 1000);
+    }
+
+    seal.addEventListener("click", function () {
+      envelope.classList.add("open");
+      seal.disabled = true;
+      if (reduce) { showSite(); return; }
+      setTimeout(function () { intro.classList.add("leaving"); }, 1500);
+      setTimeout(showSite, 2100);
+    });
+
+    menuToggle.addEventListener("click", function () {
+      var open = nav.classList.toggle("open");
+      menuToggle.setAttribute("aria-expanded", String(open));
+    });
+
+    document.addEventListener("click", function (e) {
+      var link = e.target.closest ? e.target.closest("a[data-scroll]") : null;
+      if (!link) return;
+      var target = document.querySelector(link.getAttribute("href"));
+      if (!target) return;
+      e.preventDefault();
+      nav.classList.remove("open");
+      menuToggle.setAttribute("aria-expanded", "false");
+      target.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    });
+
+    var form = document.getElementById("rsvpForm");
+    var msg = document.getElementById("formMessage");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var name = document.getElementById("guestName").value.trim();
+      var attend = document.getElementById("attendance").value;
+      try {
+        localStorage.setItem("blue-hour-rsvp", JSON.stringify({
+          name: name,
+          email: document.getElementById("guestEmail").value.trim(),
+          attendance: attend,
+          message: document.getElementById("guestMessage").value.trim()
+        }));
+      } catch (err) {}
+      msg.textContent = attend.indexOf("Yes") === 0
+        ? "Thank you, " + name + ". We'll see you on 19 June."
+        : "Thank you, " + name + ". We'll miss you.";
+      form.reset();
+    });
+  })();
+</script>
+
+</body></html>
